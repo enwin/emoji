@@ -1,0 +1,23 @@
+extends _layout/default
+
+block content
+  #layout
+    each cat, name in emoji
+      div(id="page-recent")
+      div(id=['page',name].join('-'))
+        ul.list
+          each s, index in cat
+            li(class=!index?'show': null)
+              each e in s
+                button.key(aria-label=e.name data-key=e.char )!=e.char
+
+    div.commands
+      button.key.command( aria-label="switch keyboards" data-key="switch" ) 😃
+      ul.menu
+        li
+          button.key.item.command( aria-label="recent" data-key="recent" aria-controls="page-recent" aria-expanded="false" ) 🕒
+        each cat, name in [{char:"😃",name:"people"},{char:"🌸",name:"nature"},{char:"🔔",name:"object"},{char:"🚘",name:"places"},{char:"🔣",name:"symbols"}]
+          li
+            button.key.item.command( aria-label=[ name, "category" ].join(' ') data-key=cat.name aria-controls=["page",cat.name].join('-') aria-expanded="false" )!= cat.char
+
+      button.key.command(aria-label="delete"  data-key="delete" ) ⌫

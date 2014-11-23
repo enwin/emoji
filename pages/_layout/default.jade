@@ -1,0 +1,22 @@
+include ../_tools/mixins
+
+block vars
+
+doctype
+html( lang=lang )
+  head
+    meta( charset="utf-8" )
+
+    title= title
+
+    //- Mobile
+    meta( name="viewport" content=meta.viewport.join() )
+
+    //- Stylesheets
+    link( rel="stylesheet" href="#{url.css}styles.css" )
+    script( src="#{url.js}scripts.js" )
+    if dev
+      script( src="//localhost:35729/livereload.js" )
+
+  body(class=pageType)
+    block content

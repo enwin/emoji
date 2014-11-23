@@ -1,0 +1,20 @@
+{
+  "lang": "en",
+  "title": "emoji",
+  "webapp": false,
+  "msColor": false,
+  "root": "/",
+  "url": {
+    "css": "css/",
+    "dyn": "media/dyn/",
+    "icon": "media/icons/",
+    "img": "media/img",
+    "js": "js/"
+  },
+  "meta": {
+    "viewport": [
+      "width=device-width",
+      "initial-scale=1"
+    ]
+  }
+}

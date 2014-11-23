@@ -1,0 +1,13 @@
+{
+	// Default options
+	'functions': true
+}
+
+[class^={{options.cssPrefix}}-]
+		background-size: auto ( {{items.0.total_height}}px / 2 )
+
+{{#items}}
+.{{options.cssPrefix}}icon-{{name}}
+		background-position: ( {{px.offset_x}} / 2 ) ( {{px.offset_y}} / 2 )
+
+{{/items}}

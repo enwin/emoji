@@ -1,0 +1,129 @@
+/* != Main
+--------------------------------------------------------------------------- */
+html
+   pointer-events: none
+
+#layout
+   pointer-events: auto
+   position: absolute
+   width: 100%
+   height: 20.4rem /* 20.4rem keyboard, 3rem word suggestions 0.2 rem border*/
+   bottom: 0
+   pointer-events: auto
+   font-family: sans-serif
+   padding: 0
+   margin: 0
+   background-color: #5b6668
+
+[id^=page-]
+   height: 15.3rem
+   display: none
+
+   &.show
+      display: block
+
+.list
+   list-style: none
+   margin: 0
+   padding: 0
+   font-size: 0
+   backface-visibility: hidden
+
+   &.move li
+      transition: transform 0.3s $ease-out-quad
+
+   li
+      background-color: #5b6668
+      display: none
+      left: 0
+      position: absolute
+      width: 100%
+      top: 0
+      z-index: 0
+
+      &.show
+         display: block
+         z-index: 1
+
+.commands
+   background-color: #525c5e
+   color: #fff
+   font-family: "symbols"
+   font-size: 0
+
+   .key
+      width: 6.1rem
+
+      &[data-key].touch:before
+         content: inherit
+
+      &[aria-expanded=true]
+         border-bottom: 2px solid #00aacc
+
+   li .key
+      font-size: 2rem
+      height: 100%
+      line-height: 5.1rem
+      width: 100%
+
+.menu
+   clearfix()
+   height: 5.1rem
+   list-style: none
+   margin: 0
+   padding: 0
+   display: inline-block
+   width: calc( 100% - 12.2rem )
+
+   li
+      float: left
+      height: 100%
+      width: (100%/6)
+
+.key
+  position:relative
+  display: inline-block
+  min-width: (100%/7)
+  border-radius: 0
+  /*
+   * This height plus the top and bottom margin makes an overall height of
+   * 5.1rem per row. The reason for the margin is that it prevents the left
+   * and right borders from going all the way to the top and bottom of the row.
+   */
+  height: 5.1rem//rnd( 51em / 24)
+  margin: 0
+  padding: 0
+
+  background: none
+  border: 0
+
+  // border-right: 0.1rem solid #525b5e
+  // border-left: 0.1rem solid transparent
+
+  font-weight: normal
+  font-size: rnd(24rem/10)
+  line-height: rnd( 51em/24 )
+  text-align: center
+  vertical-align: top
+
+  z-index: 10
+
+   &.touch
+      background-color: #4a5255
+
+   &[data-key].touch:before
+      content: attr(data-key)
+
+      position: absolute
+      display:block
+
+      top: -5.6rem
+      left: calc(50% - 2.8rem)
+      width: 5.6rem
+      height: 5.6rem
+      color: #fff
+      font-size: 2.8rem
+      font-weight: medium
+      line-height: 6.1rem
+      border-radius: 50%
+      background-color: #00aacc

@@ -1,0 +1,18 @@
+<% if (iconsStyles) { %><% for (var glyphIdx = 0; glyphIdx < glyphs.length; glyphIdx++) { %>$<%= prefix %><%= glyphs[glyphIdx] %> = "\<%= codepoints[glyphIdx] %>"
+<% } } %>
+iconFont()
+	-moz-osx-font-smoothing: grayscale
+	-webkit-font-smoothing: antialiased
+	font-style: normal unless @font-style
+	font-variant: normal unless @font-variant
+	font-weight: normal unless @font-weight
+	line-height: 1 unless @line-height
+	speak: none unless @speak
+	text-transform: none unless @text-transform
+
+icon( $char )
+	content: $char
+	font-family: "<%= fontBaseName %>"
+	iconFont()
+
+font-face( "<%= fontBaseName %>", $url-font + "<%= fontBaseName %>/<%= fontBaseName %>" )

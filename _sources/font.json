@@ -1,0 +1,45 @@
+{
+    "chars": [
+        {
+            "name": "backspace",
+            "value": "e006",
+            "fontFamily": "icons"
+        },
+        {
+            "name": "objects",
+            "value": "e004",
+            "fontFamily": "icons"
+        },
+        {
+            "name": "recent",
+            "value": "e001",
+            "fontFamily": "icons"
+        },
+        {
+            "name": "places",
+            "value": "e002",
+            "fontFamily": "icons"
+        },
+        {
+            "name": "people",
+            "value": "e003",
+            "fontFamily": "icons"
+        },
+        {
+            "name": "symbols",
+            "value": "e000",
+            "fontFamily": "icons"
+        },
+        {
+            "name": "nature",
+            "value": "e005",
+            "fontFamily": "icons"
+        }
+    ],
+    "fonts": {
+        "woff": "../medias/fonts/icons.woff"
+    },
+    "fontFamily": "icons",
+    "options": {},
+    "escapedFontFamily": "\"icons\""
+}
