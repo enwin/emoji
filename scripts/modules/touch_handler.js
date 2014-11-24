@@ -25,6 +25,8 @@ module.exports =function(){
 
   var delay;
   var move;
+  var touchEnded;
+  var moving;
 
   var activeKey = null;
   var activeTouch = null;
@@ -91,10 +93,11 @@ module.exports =function(){
   }
 
   function touchstart(touch) {
-    window.clearTimeout( delay );
 
     var keyname = keyAt(touch.clientX, touch.clientY),
         noSwipe;
+
+    window.clearTimeout( delay );
 
     if( pageview.keyelts[ keyname ].classList.contains('command') ){
       noSwipe = true;
@@ -104,7 +107,6 @@ module.exports =function(){
     }
 
     delay = window.setTimeout( function(){
-      //console.log( 'delay' );
       move = false;
       // If there is already an active key when this touch begins
       // then we're in a multi-touch case. Handle the pending key first
@@ -123,17 +125,33 @@ module.exports =function(){
       activeTouch = touch.identifier;
       pageview.highlight(keyname);
 
-      startTimers();
+      if( touchEnded ){
+        window.setTimeout( function(){
+          touchEnded = false;
+          touchend(touch);
+        }, 100 );
+      }
+      else{
+        startTimers();
+      }
+
     }, noSwipe ? 0 : 100);
   }
 
   function touchend(touch) {
+    if( moving ){
+      moving = false;
+    }
+    else{
+      touchEnded = true;
+    }
     // If this touch is not the most recent one, ignore it
     if (touch.identifier !== activeTouch){
       return;
     }
 
     cancelTimers();
+    touchEnded = false;
     window.clearTimeout( delay );
 
     if (alternativesShowing) {
@@ -155,18 +173,13 @@ module.exports =function(){
   }
 
   function touchmove(touch) {
-
-    //console.log( 'move', move );
     if( move ){
-      //console.log( 'delta', move, touch.clientX, Math.abs( move - touch.clientX ) );
-
       if( Math.abs( move - touch.clientX ) >= 1 ){
         clearTimeout( delay );
-        //console.log( 'move', move - touch.clientX > 0 ? 'left' : 'right' );
         pageview.move( move - touch.clientX > 0 );
-        move = false;
-        return;
+        moving = true;
       }
+      touchEnded = false;
       move = false;
     }
 
