@@ -4,12 +4,14 @@ block content
   #layout
     each cat, name in emoji
       div(id="page-recent")
+        ul.list
+          li.show
       div(id=['page',name].join('-'))
         ul.list
           each s, index in cat
             li(class=!index?'show': null)
               each e in s
-                button.key(aria-label=e.name data-key=e.char )!=e.char
+                button.key(aria-label=e.name data-key=e.char data-cat=name )!=e.char
 
     div.commands
       button.key.command( aria-label="switch keyboards" data-key="switch" ) 😃

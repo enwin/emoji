@@ -5,11 +5,11 @@ module.exports = function( app ){
     page: {
       keys: app.datas.key
     },
-    highlight: function( keycode ){
-      app.datas.keyEls[ keycode ].classList.add( 'touch' );
+    highlight: function( keyname ){
+      app.datas.keyEls[ keyname ].classList.add( 'touch' );
     },
-    unhighlight: function( keycode ){
-      app.datas.keyEls[ keycode ].classList.remove( 'touch' );
+    unhighlight: function( keyname ){
+      app.datas.keyEls[ keyname ].classList.remove( 'touch' );
     },
     showAlternatives: function(){},
     getKeyRect: function( keyname ){
