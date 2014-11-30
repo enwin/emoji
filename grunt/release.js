@@ -9,7 +9,7 @@ module.exports = function( grunt ) {
     'js:release',
     'stylus:release',
     'cssmin:release',
-    'imageoptim', // pngmin + imagemin + svgmin
+    'imagemin',
     'notify:release'
   ];
 
