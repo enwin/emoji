@@ -22,7 +22,7 @@
   "inputs": {
     "emoji": {
       "launch_path": "/index.html",
-      "name": "Emoji keyboard",
+      "name": "Emoji",
       "description": "Allows you to use emoji characters",
       "types": ["text", "url", "email"]
     }
