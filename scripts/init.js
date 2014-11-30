@@ -42,6 +42,8 @@ var App = function(){
     this.touchHandler.addEventListener( 'key', this.handleKey.bind( this ) );
 
     document.addEventListener( 'visibilitychange', this.handleVisibility.bind( this ) );
+
+    window.screen.addEventListener( 'mozorientationchange', this.handleResize.bind( this ) );
   };
 
   // invalidate all key coords
