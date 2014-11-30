@@ -132,15 +132,15 @@ var App = function(){
     switch( e.detail.key ){
       // display next keyboard
       case 'switch':
-        if( this.datas.sound ){
-          this.emitSound( 'special' );
-        }
-
         if( e.detail.long ){
           navigator.mozInputMethod.mgmt.showAll();
         }
         else{
-           navigator.mozInputMethod.mgmt.next();
+          if( this.datas.sound ){
+            this.emitSound( 'special' );
+          }
+
+          navigator.mozInputMethod.mgmt.next();
         }
         break;
       // send backspace key
