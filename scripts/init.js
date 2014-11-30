@@ -191,7 +191,7 @@ var App = function(){
 
     // update recent page if it has been updated
     var recents = JSON.parse( window.localStorage.getItem( 'recents' ) ) || [];
-    if( recents !== this.datas.recents ){
+    if( recents.length !== this.datas.recents.length ){
 
       this.datas.recents = recents;
 
