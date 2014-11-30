@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>emoji</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="css/settings.css">
+    <link rel="stylesheet" href="app://theme.gaiamobile.org/shared/elements/gaia-theme/gaia-theme.css">
+  </head>
+  <body class="settings">
+    <section role="region">
+      <header>
+        <button id="back" type="button"><span>back</span></button>
+        <h1>😅 <span>Emoji settings</span></h1>
+      </header>
+      <div>
+        <form id="settings">
+          <ul>
+            <li>
+              <input type="checkbox" name="vibrate" id="emoji-vibrate" class="cb-vibrate">
+              <label for="emoji-vibrate"><span>Vibration</span><span class="switch"><span class="tick">
+                    <svg viewBox="57.5 17 92 27">
+                      <use xlink:href="media/img/switch.svg#switch"></use>
+                    </svg></span></span></label>
+            </li>
+            <li>
+              <input type="checkbox" name="sound" id="emoji-sound" class="cb-sound">
+              <label for="emoji-sound"><span>Click sound</span><span class="switch"><span class="tick">
+                    <svg viewBox="57.5 17 92 27">
+                      <use xlink:href="media/img/switch.svg#switch"></use>
+                    </svg></span></span></label>
+            </li>
+            <li>
+              <button id="recent" type="button" disabled class="bt-danger">Reset emoji history</button>
+            </li>
+          </ul>
+        </form>
+      </div>
+    </section>
+    <script src="js/settings.js"></script>
+  </body>
+</html>

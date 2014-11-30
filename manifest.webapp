@@ -1,0 +1,30 @@
+{
+  "name": "Emoji keyboard",
+  "version": "1.0.0",
+  "description": "Allows you to use emoji characters",
+  "type": "privileged",
+  "role": "input",
+  "launch_path": "/settings.html",
+  "developer": {
+    "name": "Thomas Beduneau",
+    "url": "https://twitter.com/enwin"
+  },
+  "permissions": {
+    "input": {
+      "description": "To send key events"
+    }
+  },
+  "icons": {
+    "80":"/media/icons/80.png",
+    "128": "/media/icons/128.png",
+    "512": "/media/icons/512.png"
+  },
+  "inputs": {
+    "emoji": {
+      "launch_path": "/index.html",
+      "name": "Emoji",
+      "description": "Allows you to use emoji characters",
+      "types": ["text", "url", "email"]
+    }
+  }
+}
