@@ -37,9 +37,11 @@ var App = function(){
   this.bind = function(){
     this.el.addEventListener( 'transitionend', this.handlePageSwitch.bind( this ) );
 
-    navigator.mozInputMethod.addEventListener('inputcontextchange', this.handleResize.bind( this ) );
+    navigator.mozInputMethod.addEventListener( 'inputcontextchange', this.handleResize.bind( this ) );
 
     this.touchHandler.addEventListener( 'key', this.handleKey.bind( this ) );
+
+    document.addEventListener( 'visibilitychange', this.handleVisibility.bind( this ) );
   };
 
   // invalidate all key coords
@@ -47,6 +49,26 @@ var App = function(){
     for( var keyname in this.datas.keyEls ){
       this.datas.keyEls[ keyname ].rect = null;
     }
+  };
+
+  this.emitSound = function( sound ){
+
+    var audio = new Audio('./media/sounds/'+sound+'.wav');
+
+    audio.play();
+  };
+
+  this.extendWithSettings = function(){
+
+    var settings = JSON.parse( window.localStorage.getItem( 'emoji.settings' ) ) || {
+      vibrate: false,
+      sound: false
+    };
+    // extend with settings
+    for( var key in settings ){
+      this.datas[ key ] = settings[ key ];
+    }
+
   };
 
   this.process = function(){
@@ -66,6 +88,8 @@ var App = function(){
       key: {},
       recents: JSON.parse( window.localStorage.getItem( 'recents' ) ) || []
     };
+
+    this.extendWithSettings();
 
     this.els.keys.forEach( function( keyEl ){
       var symbol = keyEl.dataset.key,
@@ -91,7 +115,16 @@ var App = function(){
   this.handleKey = function( e ){
     var el = this.datas.keyEls[ e.detail ];
 
+    if( this.datas.vibrate && window.navigator.vibrate ){
+      window.navigator.vibrate( 50 );
+    }
+
     if( el.classList.contains( 'item' ) ){
+
+      if( this.datas.sound ){
+        this.emitSound( 'special' );
+      }
+
       this.switchPage( el );
       return;
     }
@@ -99,14 +132,23 @@ var App = function(){
     switch( e.detail ){
       // display next keyboard
       case 'switch':
+        if( this.datas.sound ){
+          this.emitSound( 'special' );
+        }
         navigator.mozInputMethod.mgmt.next();
         break;
       // send backspace key
       case 'delete':
+        if( this.datas.sound ){
+          this.emitSound( 'special' );
+        }
         navigator.mozInputMethod.inputcontext.sendKey( KeyEvent.DOM_VK_BACK_SPACE, 0, 0);
         break;
       // send emoji
       default:
+      if( this.datas.sound ){
+        this.emitSound( 'key' );
+      }
       navigator.mozInputMethod.inputcontext.setComposition( this.datas.key[ e.detail ].keycode );
       navigator.mozInputMethod.inputcontext.endComposition( this.datas.key[ e.detail ].keycode );
       this.updateRecent( e.detail );
@@ -133,6 +175,28 @@ var App = function(){
     this.clearKeyRect();
   };
 
+  this.handleVisibility = function(){
+    if( document.hidden ){
+      return;
+    }
+
+    // update keyboard with settings
+    this.extendWithSettings();
+
+    // update recent page if it has been updated
+    var recents = JSON.parse( window.localStorage.getItem( 'recents' ) ) || [];
+    if( recents !== this.datas.recents ){
+
+      this.datas.recents = recents;
+
+      // fill recent page
+      this.updateRecent();
+
+      // shotcut to display first emoji page
+      this.switchPage( this.els.switches[ this.datas.recents.length ? 0 : 1 ] );
+    }
+
+  };
 
   // change category page based on the category key passed
   //  move to first page of category if key pressed is the current category
@@ -213,5 +277,3 @@ var App = function(){
 };
 
 new App();
-
-

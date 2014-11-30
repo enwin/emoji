@@ -13,10 +13,12 @@ html( lang=lang )
     meta( name="viewport" content=meta.viewport.join() )
 
     //- Stylesheets
-    link( rel="stylesheet" href="#{url.css}styles.css" )
-    script( src="#{url.js}scripts.js" )
+    link( rel="stylesheet" href="#{url.css}"+(pageType || "styles")+".css" )
+    link( rel="stylesheet" href="app://theme.gaiamobile.org/shared/elements/gaia-theme/gaia-theme.css" )
     if dev
       script( src="//localhost:35729/livereload.js" )
 
   body(class=pageType)
     block content
+
+    script( src="#{url.js}"+(pageType || "scripts")+".js" )

@@ -1,0 +1,36 @@
+block vars
+  - pageType = 'settings';
+
+extends _layout/default
+
+block content
+  section( role="region" )
+    header(  )
+      button#back(type="button")
+        span back
+
+      h1 😅 <span>Emoji settings</span>
+
+    div
+      form#settings
+        ul
+          li
+            input(class="cb-vibrate" type="checkbox" name="vibrate" id="emoji-vibrate" )
+            label( for="emoji-vibrate" )
+              span Vibration
+              span.switch
+                span.tick
+                  svg(viewBox="57.5 17 92 27")
+                    use(xlink:href="media/img/switch.svg#switch")
+
+          li
+            input(class="cb-sound" type="checkbox" name="sound" id="emoji-sound" )
+            label( for="emoji-sound" )
+              span Click sound
+              span.switch
+                span.tick
+                  svg(viewBox="57.5 17 92 27")
+                    use(xlink:href="media/img/switch.svg#switch")
+
+          li
+            button.bt-danger#recent(type="button" disabled) Reset emoji history

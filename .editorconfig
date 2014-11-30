@@ -24,3 +24,7 @@ indent_size = 2
 [*.styl]
 indent_style = space
 indent_size = 3
+
+[*.webapp]
+indent_style = space
+indent_size = 2

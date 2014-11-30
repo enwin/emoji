@@ -1,0 +1,262 @@
+/**
+ * Headers should not scroll with the rest of the page, except for #root.
+ */
+section[role="region"] > header
+   position: relative
+   display: block
+   z-index: 10
+   padding: 0
+   height: 5rem
+   border: none
+   color: #868692
+   background-color: #f4f4f4
+
+   h1
+      font-size: 2.3rem
+      line-height: 5rem
+      white-space: nowrap
+      text-overflow: ellipsis
+      display: block
+      overflow: hidden
+      margin: 0 5rem 0 0
+      padding: 0 1rem
+      height: 100%
+      font-weight: 300
+      text-align: center
+
+      span
+         font-style: italic
+
+   button
+      box-sizing: border-box
+      position: relative
+      display: block
+      overflow: hidden
+      float: left
+      min-width: 5rem
+      width: auto
+      height: 5rem
+      border: none
+      background: none
+      padding: 0 1rem
+      margin: 0
+      font-weight: 400
+      font-size: 1.5rem
+      line-height: 5rem
+      border-radius: 0
+      text-decoration: none
+      text-align: center
+      text-shadow: none
+      font-style: italic
+      background: url('../media/img/back.png') no-repeat center center
+      background-size: 3rem auto
+
+      // &::-moz-focus-inner
+      //    outline: none
+      //    border: none
+      //    margin-top: -0.2rem /* To fix line-height bug (697451) */
+      //    padding: 0
+
+      &:focus
+      &:hover
+         background-color: rgba(0,0,0,0.1)
+
+      &[disabled]
+         opacity: 0.3
+         pointer-events: none
+
+      span
+         hide()
+
+section[role="region"] > div
+  position: absolute
+  top: 5rem
+  right: 0
+  bottom: 0
+  left: 0
+  width: 100%
+  height: calc(100% - 5rem)
+  overflow-y: scroll
+
+aside.pack-end > label
+  margin-top: 0.5rem
+
+section[data-type="list"] p>label
+  width: 100%
+  display: inline-block
+
+[id=settings]
+   padding: 0 1.5rem
+
+
+   ul
+      list-style: none
+      padding: 0
+      margin: 0
+
+   label
+      clearfix()
+      width: 100%
+
+      span
+         display: inline-block
+         vertical-align: middle
+
+         &::selection
+            background: none
+
+         &:first-child
+            width: calc( 100% - 6rem )
+
+
+
+      &:before
+         content: ''
+         display: inline-block
+         height: 100%
+         vertical-align: middle
+
+li
+  border-bottom: solid 0.1rem #e7e7e7
+  color: #333
+
+  &:last-child
+     border-width: 0
+     margin-top: 2rem
+
+/* != Switch checkbox
+--------------------------------------------------------------------------- */
+[class^=cb-]
+   border: 0
+   clip: rect( 0 0 0 0 )
+   height: 1px
+   margin: -1px
+   overflow: hidden
+   padding: 0
+   position: absolute
+   width: 1px
+
+
+   + label
+      background: none
+      cursor: pointer
+      display: inline-block
+      height: 6rem
+      font-size: 1.8rem
+
+      .switch-check{
+         fill:#ffffff
+      }
+      .switch-base{
+         fill:#b0babc
+         transition: fill 0.2s ease
+      }
+      .switch-circle{
+         fill:#ffffff
+         stroke:#9ba6a8
+         stroke-width:9
+         transition: stroke 0.2s ease
+      }
+
+      .switch
+         border-radius: 13px
+         display: inline-block
+         overflow: hidden
+         vertical-align: middle
+         width: round( ( 60rem/$font-size), $rounding )
+
+      .tick
+         display: block
+         height: 27px
+         position: relative
+         transform translateX( -32px )
+         transition: transform 0.2s ease, color 0.2s ease
+         width: 92px
+
+         &:after
+            color: #cacaca
+            height: 27px
+            left: 0
+            line-height: 27px
+            position: absolute
+            text-align: center
+            top: 0
+            width: 92px
+
+      svg
+         display: block
+         width: round( ( 92rem/$font-size), $rounding )
+
+
+   &:checked
+      + label
+         .tick
+            transform: translateX( 0 )
+
+         .switch-base{
+            fill:#00aacc
+         }
+         .switch-circle{
+            stroke:#00caf2
+         }
+
+   &.reversed
+      &:checked
+         + label
+            .tick
+               transform: translateX( -32px )
+
+            .switch-base{
+               fill:#b0babc
+            }
+            .switch-circle{
+               stroke:#9ba6a8
+            }
+
+      + label
+         .tick
+            transform: translateX( 0 )
+
+         .switch-base{
+            fill:#00aacc
+         }
+         .switch-circle{
+            stroke:#00caf2
+         }
+
+   &[disabled] + label
+      opacity: 0.5
+
+[class*=bt-]
+   font-family: sans-serif
+   font-style: italic
+   width: 100%
+   height: 4rem
+   margin: 0
+   padding: 0 1.2rem
+   box-sizing: border-box
+   display: inline-block
+   vertical-align: middle
+   text-overflow: ellipsis
+   white-space: nowrap
+   overflow: hidden
+   background: #d8d8d8
+   border: none
+   border-radius: 2rem
+   font-weight: normal
+   font-size: 1.6rem
+   line-height: 4rem
+   color: #333
+   text-align: center
+   text-decoration: none
+   outline: none
+
+
+.bt-danger
+   background-color: #e51e1e
+   color: #fff
+
+   &[disabled]
+      background-color: #eb7474
+      color: rgba(255,255,255,0.5)
+      pointer-events: none
