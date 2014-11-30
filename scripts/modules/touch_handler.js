@@ -27,6 +27,7 @@ module.exports =function(){
   var move;
   var touchEnded;
   var moving;
+  var longPress;
 
   var activeKey = null;
   var activeTouch = null;
@@ -127,12 +128,16 @@ module.exports =function(){
 
       if( touchEnded ){
         window.setTimeout( function(){
+          window.clearTimeout( longPress );
           touchEnded = false;
           touchend(touch);
         }, 100 );
       }
       else{
         startTimers();
+        longPress = window.setTimeout( function(){
+          sendKey( 'long' );
+        }, 700 );
       }
 
     }, noSwipe ? 0 : 100);
@@ -145,6 +150,10 @@ module.exports =function(){
     else{
       touchEnded = true;
     }
+
+    // disable longpress
+    window.clearTimeout( longPress );
+
     // If this touch is not the most recent one, ignore it
     if (touch.identifier !== activeTouch){
       return;
@@ -228,9 +237,9 @@ module.exports =function(){
     }
   }
 
-  function sendKey() {
+  function sendKey( longKey ) {
     pageview.unhighlight(activeKey);
-    dispatchKeyEvent(activeKey);
+    dispatchKeyEvent(activeKey, longKey);
   }
 
   // keys in the alternatives menu are not handled the same way
@@ -293,8 +302,16 @@ module.exports =function(){
     dispatcher.removeEventListener(type, handler);
   }
 
-  function dispatchKeyEvent(keyname) {
-    dispatcher.dispatchEvent(new CustomEvent('key', { detail: keyname }));
+  function dispatchKeyEvent(keyname, longKey) {
+    var data = {
+      key: keyname
+    };
+
+    if( longKey ){
+      data.long = true;
+    }
+
+    dispatcher.dispatchEvent(new CustomEvent('key', { detail: data }));
   }
 
   function setExpectedChars(chars) {

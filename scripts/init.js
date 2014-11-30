@@ -113,7 +113,7 @@ var App = function(){
   };
 
   this.handleKey = function( e ){
-    var el = this.datas.keyEls[ e.detail ];
+    var el = this.datas.keyEls[ e.detail.key ];
 
     if( this.datas.vibrate && window.navigator.vibrate ){
       window.navigator.vibrate( 50 );
@@ -129,13 +129,19 @@ var App = function(){
       return;
     }
 
-    switch( e.detail ){
+    switch( e.detail.key ){
       // display next keyboard
       case 'switch':
         if( this.datas.sound ){
           this.emitSound( 'special' );
         }
-        navigator.mozInputMethod.mgmt.next();
+
+        if( e.detail.long ){
+          navigator.mozInputMethod.mgmt.showAll();
+        }
+        else{
+           navigator.mozInputMethod.mgmt.next();
+        }
         break;
       // send backspace key
       case 'delete':
@@ -149,9 +155,9 @@ var App = function(){
       if( this.datas.sound ){
         this.emitSound( 'key' );
       }
-      navigator.mozInputMethod.inputcontext.setComposition( this.datas.key[ e.detail ].keycode );
-      navigator.mozInputMethod.inputcontext.endComposition( this.datas.key[ e.detail ].keycode );
-      this.updateRecent( e.detail );
+      navigator.mozInputMethod.inputcontext.setComposition( this.datas.key[ e.detail.key ].keycode );
+      navigator.mozInputMethod.inputcontext.endComposition( this.datas.key[ e.detail.key ].keycode );
+      this.updateRecent( e.detail.key );
     }
   };
 
