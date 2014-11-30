@@ -2,7 +2,7 @@
 
 /* global KeyEvent:true*/
 
-var touch = require( './modules/touch_handler' ),
+var touch = require( './helpers/touch_handler' ),
     layout = require( './modules/layout' );
 
 var App = function(){

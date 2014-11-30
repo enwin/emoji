@@ -5,7 +5,7 @@ document.addEventListener('visibilitychange', function() {
 });
 
 document.getElementById('back').addEventListener('click', function() {
-  var activity = new MozActivity({
+  new window.MozActivity({
     name: 'configure',
     data: {
       target: 'device'
