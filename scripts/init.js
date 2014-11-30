@@ -164,6 +164,11 @@ var App = function(){
   // called by the two pages that are moving
   this.handlePageSwitch = function( e ){
     var el = e.target;
+
+    if( el.classList.contains( 'pager' ) ){
+      return;
+    }
+
     // switch show class on page moving
     //  remove it on the current page
     //  add it to the new one
@@ -213,6 +218,7 @@ var App = function(){
     if( 'true' === displayed ){
       var currentPage = document.querySelector( '.show li.show' ),
           nextPage = currentPage.parentNode.firstElementChild,
+          index,
           out = 100;
 
       if( !nextPage || currentPage === nextPage ){
@@ -221,6 +227,11 @@ var App = function(){
 
       // clear key position
       this.clearKeyRect();
+
+      if( page.pager.style ){
+        index = Array.prototype.indexOf.call( page.pages, nextPage );
+        page.pager.style.transform = ['translateX(',(100*index),'%)'].join('');
+      }
 
       nextPage.style.transform = ['translateX(', out*-1 ,'%)'].join('');
       nextPage.style.display = 'block';
@@ -247,6 +258,21 @@ var App = function(){
     }, this );
 
     this.clearKeyRect();
+
+    // set the pager width
+    if( !page.pager ){
+      page.pager = page.querySelector( '.pager' );
+
+      if( !page.pager ){
+        page.pager = true;
+        return;
+      }
+
+      page.pages = page.querySelectorAll( 'li' );
+
+      page.pager.style.width = [ (100/page.pages.length).toFixed(3), '%'].join('');
+
+    }
   };
 
   this.updateRecent = function( keyname ){

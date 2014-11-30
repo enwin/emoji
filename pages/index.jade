@@ -7,6 +7,7 @@ block content
         ul.list
           li.show
       div(id=['page',name].join('-'))
+        span.pager( aria-hidden="true" )
         ul.list
           each s, index in cat
             li(class=!index?'show': null)

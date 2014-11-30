@@ -32,14 +32,20 @@ module.exports = function( app ){
     move: function( next ){
       // TODO clean selector
       var currentPage = document.querySelector( '.show li.show' ),
+          container = currentPage.parentNode.parentNode,
           nextPage = currentPage[ next ? 'nextElementSibling' : 'previousElementSibling' ],
+          index,
           out = 100*(next ? -1 : 1 );
-
-
-      //console.log( currentPage, nextPage );
 
       if( !nextPage ){
         return;
+      }
+
+      console.log( index );
+
+      if( container.pager.style ){
+        index = Array.prototype.indexOf.call( container.pages, nextPage );
+        container.pager.style.transform = ['translateX(',(100*index),'%)'].join('');
       }
 
       // clear key position
