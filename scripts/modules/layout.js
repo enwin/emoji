@@ -41,8 +41,6 @@ module.exports = function( app ){
         return;
       }
 
-      console.log( index );
-
       if( container.pager.style ){
         index = Array.prototype.indexOf.call( container.pages, nextPage );
         container.pager.style.transform = ['translateX(',(100*index),'%)'].join('');
