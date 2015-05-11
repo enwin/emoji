@@ -2,7 +2,7 @@
   "name": "emoji",
   "title": "emoji",
   "description": "emoji keyboard",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "repository": {
     "type": "git",
     "url": "git://github.com/tomtom/emoji.git"
