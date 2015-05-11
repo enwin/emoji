@@ -18,7 +18,11 @@ var App = function(){
 
     // shotcut to display first emoji page
     this.switchPage( this.els.switches[ this.datas.recents.length ? 0 : 1 ] );
+
+    // force first display of the keyboard
+    this.handleResize();
   };
+
 
   this.addRecentKey = function( el ){
     var name = [ 'recent', el.dataset.key ].join('-');
@@ -183,7 +187,7 @@ var App = function(){
     el.parentNode.classList.remove( 'move' );
   };
 
-  this.handleResize = function() {
+  this.handleResize = function(){
     window.resizeTo( window.innerWidth, this.el.clientHeight );
     this.clearKeyRect();
   };
