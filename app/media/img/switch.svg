@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="92" height="27" viewBox="57.5 17 92 27" enable-background="new 57.5 17 92 27">
+	<defs>
+		<g id="switch">
+			<path class="switch-base" d="M57.5 17h92v27h-92V17z"/>
+			<circle class="switch-circle" cx="103.5" cy="30.5" r="16.444"/>
+			<path class="switch-check" d="M70.813 35.135c-.535.54-1.35.62-1.972.244l-3.118-4.24 1.13-1.338 2.42 3.32c.002.003.004.01.01.013.203.207.53.213.745.02l.002.006 7.692-9.103v2.79l-6.91 8.288z"/>
+		</g>
+	</defs>
+</svg>

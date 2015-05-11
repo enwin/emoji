@@ -18,7 +18,11 @@ var App = function(){
 
     // shotcut to display first emoji page
     this.switchPage( this.els.switches[ this.datas.recents.length ? 0 : 1 ] );
+
+    // force first display of the keyboard
+    this.handleResize();
   };
+
 
   this.addRecentKey = function( el ){
     var name = [ 'recent', el.dataset.key ].join('-');
@@ -147,6 +151,9 @@ var App = function(){
         break;
       // send backspace key
       case 'delete':
+        if( e.detail.long ){
+          return;
+        }
         if( this.datas.sound ){
           this.emitSound( 'special' );
         }
@@ -154,12 +161,15 @@ var App = function(){
         break;
       // send emoji
       default:
-      if( this.datas.sound ){
-        this.emitSound( 'key' );
-      }
-      navigator.mozInputMethod.inputcontext.setComposition( this.datas.key[ e.detail.key ].keycode );
-      navigator.mozInputMethod.inputcontext.endComposition( this.datas.key[ e.detail.key ].keycode );
-      this.updateRecent( e.detail.key );
+        if( e.detail.long ){
+          return;
+        }
+        if( this.datas.sound ){
+          this.emitSound( 'key' );
+        }
+        navigator.mozInputMethod.inputcontext.setComposition( this.datas.key[ e.detail.key ].keycode );
+        navigator.mozInputMethod.inputcontext.endComposition( this.datas.key[ e.detail.key ].keycode );
+        this.updateRecent( e.detail.key );
     }
   };
 
@@ -183,7 +193,7 @@ var App = function(){
     el.parentNode.classList.remove( 'move' );
   };
 
-  this.handleResize = function() {
+  this.handleResize = function(){
     window.resizeTo( window.innerWidth, this.el.clientHeight );
     this.clearKeyRect();
   };
