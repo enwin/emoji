@@ -15,7 +15,7 @@ block content
                 button.key(aria-label=e.name data-key=e.char data-cat=name )!=e.char
 
     div.commands
-      button.key.command( aria-label="switch keyboards" data-key="switch" ) 😃
+      button.key.command.hasLong( aria-label="switch keyboards" data-key="switch" ) 😃
       ul.menu
         li
           button.key.item.command( aria-label="recent" data-key="recent" aria-controls="page-recent" aria-expanded="false" ) 🕒
@@ -23,4 +23,4 @@ block content
           li
             button.key.item.command( aria-label=[ name, "category" ].join(' ') data-key=cat.name aria-controls=["page",cat.name].join('-') aria-expanded="false" )!= cat.char
 
-      button.key.command(aria-label="delete"  data-key="delete" ) ⌫
+      button.key.command.repeat(aria-label="delete"  data-key="delete" ) ⌫
