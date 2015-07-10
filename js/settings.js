@@ -6,12 +6,20 @@ document.addEventListener('visibilitychange', function() {
 });
 
 document.getElementById('back').addEventListener('click', function() {
-  new window.MozActivity({
-    name: 'configure',
-    data: {
-      target: 'device'
-    }
+  // use moz_configure_window for FOS 2.2+
+  var activity = new window.MozActivity({
+    name: 'moz_configure_window',
+    data: { target: 'device' }
   });
+  // fallback for 2.0 and 2.1
+  activity.onerror = function(){
+    new window.MozActivity({
+      name: 'configure',
+      data: {
+        target: 'device'
+      }
+    });
+  };
 });
 
 // get the keyboard settings
