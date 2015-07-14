@@ -84,7 +84,7 @@ var App = function(){
       categories: Array.prototype.slice.call( document.querySelectorAll( '[id^=page]' ) ),
       recents: document.querySelector( '#page-recent .show' ),
       keys: Array.prototype.slice.call( document.querySelectorAll( '.key' ) ),
-      switches: Array.prototype.slice.call( document.querySelectorAll( '.key.item' ) ),
+      switches: Array.prototype.slice.call( document.querySelectorAll( '.key.item' ) )
     };
 
     this.datas = {
@@ -191,6 +191,8 @@ var App = function(){
 
     // remove the css transition class
     el.parentNode.classList.remove( 'move' );
+
+    this.datas.switching = false;
   };
 
   this.handleResize = function(){
@@ -233,9 +235,11 @@ var App = function(){
           index,
           out = 100;
 
-      if( !nextPage || currentPage === nextPage ){
+      if( this.datas.switching || !nextPage || currentPage === nextPage ){
         return;
       }
+
+      this.datas.switching = true;
 
       // clear key position
       this.clearKeyRect();
