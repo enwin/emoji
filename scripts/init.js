@@ -95,7 +95,8 @@ var App = function(){
       keyEls: {},
       // array of formated keycodes
       key: {},
-      recents: JSON.parse( window.localStorage.getItem( 'recents' ) ) || []
+      recents: JSON.parse( window.localStorage.getItem( 'recents' ) ) || [],
+      transitionEnded: 0
     };
 
     this.extendWithSettings();
@@ -187,7 +188,7 @@ var App = function(){
     // switch show class on page moving
     //  remove it on the current page
     //  add it to the new one
-    el.classList.toggle( 'show', !el.classList.contains( 'show' ) );
+    el.classList.toggle( 'show', el === this.datas.currentPage.currentScreen );
 
     // clean inline style
     el.removeAttribute( 'style' );
@@ -195,7 +196,10 @@ var App = function(){
     // remove the css transition class
     el.parentNode.classList.remove( 'move' );
 
-    this.datas.switching = false;
+    if( ++this.datas.transitionEnded === 2 ){
+      this.datas.transitionEnded = 0;
+      this.datas.switching = false;
+    }
   };
 
   this.handleResize = function(){
@@ -232,37 +236,45 @@ var App = function(){
     var displayed = el.getAttribute( 'aria-expanded' ),
         page = document.getElementById( el.getAttribute( 'aria-controls' ) );
 
+    if( !page.currentScreen ){
+      page.currentScreen = page.querySelector( 'li.show' );
+    }
+
+    this.datas.currentPage = page;
+
     if( 'true' === displayed ){
-      var currentPage = document.querySelector( '.show li.show' ),
-          nextPage = currentPage.parentNode.firstElementChild,
+      var currentScreen = page.currentScreen,
+          nextScreen = currentScreen.parentNode.firstElementChild,
           index,
           out = 100;
 
-      if( this.datas.switching || !nextPage || currentPage === nextPage ){
+      if( this.datas.switching || !nextScreen || currentScreen === nextScreen ){
         return;
       }
 
       this.datas.switching = true;
 
-      // clear key position
-      this.clearKeyRect();
-
-      if( page.pager.style ){
-        index = Array.prototype.indexOf.call( page.pages, nextPage );
-        page.pager.style.transform = ['translateX(',(100*index),'%)'].join('');
-      }
-
-      nextPage.style.transform = ['translateX(', out*-1 ,'%)'].join('');
-      nextPage.style.display = 'block';
+      nextScreen.style.transform = ['translateX(', out*-1 ,'%)'].join('');
+      nextScreen.style.display = 'block';
 
       window.requestAnimationFrame( function(){
-        nextPage.parentNode.classList.add( 'move' );
+        nextScreen.parentNode.classList.add( 'move' );
 
         window.requestAnimationFrame(function(){
-          nextPage.style.transform = 'translateX(0)';
-          currentPage.style.transform = ['translateX(', out ,'%)'].join('');
-        });
-      } );
+
+          if( page.pager.style ){
+            index = Array.prototype.indexOf.call( page.pages, nextScreen );
+            page.pager.style.transform = ['translateX(',(100*index),'%)'].join('');
+          }
+
+          page.currentScreen = nextScreen;
+          nextScreen.style.transform = 'translateX(0)';
+          currentScreen.style.transform = ['translateX(', out ,'%)'].join('');
+
+          // clear key position
+          this.clearKeyRect();
+        }.bind( this ) );
+      }.bind( this ) );
 
       return;
     }
