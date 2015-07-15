@@ -29,6 +29,9 @@ var App = function(){
 
     el.dataset.cat = 'recent';
 
+    //ensure the rollover is not enabled
+    el.classList.remove( 'touch' );
+
     this.datas.keyEls[ name ] = el;
     this.datas.key[ name ] = {
       keycode: el.dataset.key,
