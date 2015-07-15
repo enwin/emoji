@@ -8,35 +8,38 @@
 module.exports =function(){
   'use strict';
 
-  // How long to wait before showing the alternatives for a key
-  const ALTERNATIVES_TIMEOUT = 700;  // milliseconds
-
-  // How long to wait before autorepeating a key
-  const REPEAT_DELAY = 700;    // milliseconds before first auto-repeat
-  const REPEAT_INTERVAL = 75;  // milliseconds between subsequent events
-
   // This constant specifies how aggressive we are with our
   // dynamic hit target resizing. Larger numbers mean more resizing.
   // The amount of resizing is proportional to the square root of this number.
   const RESIZE_FACTOR = 40;
+  const REPEAT_DELAY = 700;    // milliseconds before first auto-repeat
+  const REPEAT_INTERVAL = 75;  // milliseconds between subsequent events
+
+  // specify the duration in ms before sending a long press
+  const LONG_PRESS = 700;
+
+  // delay before remove the highlight when showing up on touchend
+  const HIGHLIGHT_OFF = 150;
+
+  // delay before the swipe is not authorized anymore
+  const SWIPE_CANCEL = 100;
 
   var pageview;
   var page;
 
   var delay;
-  var move;
+  var canMove;
+  var touchXStart;
+  var touchXMove;
   var touchEnded;
   var moving;
   var longPress;
+  var highlighted;
+  var repeating;
 
   var activeKey = null;
   var activeTouch = null;
-  var alternativesTimer = null;
-  var alternativesShowing = false;
-  var alternativesRect = null;
-  var activeAltKey = null;
-  var repeating = false;
-  var repeatTimer = null;
+  var repeatTimer;
 
   var dispatcher = document.createElement('div');
 
@@ -100,50 +103,53 @@ module.exports =function(){
 
     window.clearTimeout( delay );
 
-    if( pageview.keyelts[ keyname ].classList.contains('command') ){
+    if( pageview.keyelts[ keyname ].classList.contains( 'command' ) ){
       noSwipe = true;
+      canMove = false;
+
+      // register longpress on keys that have a longpress action
+      if( pageview.keyelts[ keyname ].classList.contains( 'hasLong' ) ){
+        longPress = window.setTimeout( function(){
+          sendKey( 'long' );
+        }, LONG_PRESS );
+      }
+      // register longpress on keys that have a longpress action
+      if( pageview.keyelts[ keyname ].classList.contains( 'repeat' ) ){
+        repeatTimer = window.setTimeout(repeatKey, REPEAT_DELAY);
+      }
     }
     else{
-      move = touch.clientX;
+      touchXStart = touch.clientX;
+      canMove = true;
     }
 
     delay = window.setTimeout( function(){
-      move = false;
+      //move = false;
+      canMove = false;
       // If there is already an active key when this touch begins
       // then we're in a multi-touch case. Handle the pending key first
       if (activeKey) {
-        if (alternativesShowing) {
-          // If the user touches another key while an alternatives menu is
-          // up, just hide the alternatives and don't send anything
-          hideAlternatives();
-        }
-        else { // No alternatives menu is up
-          //sendKey();
-        }
+        sendKey();
       }
 
       activeKey = keyname;
       activeTouch = touch.identifier;
-      pageview.highlight(keyname);
+      pageview.highlight( keyname );
+
+      highlighted = true;
 
       if( touchEnded ){
         window.setTimeout( function(){
           window.clearTimeout( longPress );
           touchEnded = false;
-          touchend(touch);
+          touchend( touch );
         }, 100 );
       }
-      else{
-        startTimers();
-        longPress = window.setTimeout( function(){
-          sendKey( 'long' );
-        }, 700 );
-      }
 
-    }, noSwipe ? 0 : 100);
+    }, noSwipe ? 0 : SWIPE_CANCEL);
   }
 
-  function touchend(touch) {
+  function touchend( touch ) {
     if( moving ){
       moving = false;
     }
@@ -154,42 +160,34 @@ module.exports =function(){
     // disable longpress
     window.clearTimeout( longPress );
 
+    // disable repeat
+    window.clearTimeout( repeatTimer );
+
     // If this touch is not the most recent one, ignore it
     if (touch.identifier !== activeTouch){
       return;
     }
 
-    cancelTimers();
     touchEnded = false;
     window.clearTimeout( delay );
 
-    if (alternativesShowing) {
-      sendAltKey();
-      hideAlternatives();
-    }
-    else if (repeating) {
-      // We already sent the key at least once while it was held down, so
-      // don't send it again now. We do have to unhighlight the key, though
-      repeating = false;
-      pageview.unhighlight(activeKey);
-    }
-    else {
-      sendKey();
-    }
+    sendKey();
 
     activeKey = null;
     activeTouch = null;
   }
 
   function touchmove(touch) {
-    if( move ){
-      if( Math.abs( move - touch.clientX ) >= 1 ){
+    if( canMove ){
+      touchXMove = touch.clientX;
+      if( Math.abs( touchXStart - touch.clientX ) >= 15 ){
         clearTimeout( delay );
-        pageview.move( move - touch.clientX > 0 );
+        pageview.move( touchXStart - touch.clientX > 0 );
         moving = true;
+        canMove = false;
       }
-      touchEnded = false;
-      move = false;
+      //touchEnded = false;
+      //move = false;
     }
 
     // If this touch is not the most recent one, ignore it
@@ -198,98 +196,50 @@ module.exports =function(){
     }
 
     var x = touch.clientX, y = touch.clientY;
-
-    if (alternativesShowing) {
-      var box = alternativesRect;
-      // If the touch has moved out of the alternatives hide the menu
-      // and cancel this touch so that any further events are ignored
-      if (x < box.left || x > box.right || y < box.top || y > box.bottom) {
-        hideAlternatives();
-        activeKey = null;
-        activeTouch = null;
-      }
-      else {
-        var altkey = document.elementFromPoint(x, y);
-        if (altkey !== activeAltKey) {
-          activeAltKey.classList.remove('touched');
-          activeAltKey = altkey;
-          activeAltKey.classList.add('touched');
-        }
-      }
-    }
-    else {
-      // XXX
-      // I should probably modify the hit detector so that if the touch is
-      // completely outside of the keyboard area it returns null and we
-      // can treat that as cancelling the input. Use a touchleave event?
-      //
-      // XXX: don't call the hit detector unless we've moved more that
-      // some small threshold of pixels since we last switched the active key.
-      // Keys should be slightly sticky that way.
-      //
-      var keyname = keyAt(x, y);
-      if (keyname !== activeKey) {
-        pageview.unhighlight(activeKey);
-        activeKey = keyname;
-        pageview.highlight(activeKey);
-        startTimers();
-      }
+    // XXX
+    // I should probably modify the hit detector so that if the touch is
+    // completely outside of the keyboard area it returns null and we
+    // can treat that as cancelling the input. Use a touchleave event?
+    //
+    // XXX: don't call the hit detector unless we've moved more that
+    // some small threshold of pixels since we last switched the active key.
+    // Keys should be slightly sticky that way.
+    //
+    var keyname = keyAt(x, y);
+    if (keyname !== activeKey) {
+      pageview.unhighlight(activeKey);
+      activeKey = keyname;
+      pageview.highlight( activeKey );
+      //startTimers();
     }
   }
 
   function sendKey( longKey ) {
-    pageview.unhighlight(activeKey);
-    dispatchKeyEvent(activeKey, longKey);
-  }
 
-  // keys in the alternatives menu are not handled the same way
-  function sendAltKey() {
-    var keyname = activeAltKey.dataset.name;
-    dispatchKeyEvent(keyname);
-    activeAltKey = null;
-  }
+    // if the key hadnt had the time to be higlighted
+    // highlight it before hiding it 100ms later
+    if( !highlighted ){
+      pageview.highlight( activeKey );
+    }
 
-  function startTimers() {
-    cancelTimers();
-    if (page.keys[activeKey].alternatives) {
-      alternativesTimer = setTimeout(showAlternatives, ALTERNATIVES_TIMEOUT);
-    }
-    else if (page.keys[activeKey].autorepeat) {
-      repeatTimer = setTimeout(repeatKey, REPEAT_DELAY);
-    }
-  }
+    (function( key, delay ){
+      window.setTimeout( function(){
+        pageview.unhighlight( key );
+      }, delay );
+    })( activeKey, highlighted ? 0 : HIGHLIGHT_OFF );
 
-  function cancelTimers() {
-    if (alternativesTimer) {
-      clearTimeout(alternativesTimer);
-      alternativesTimer = null;
-    }
-    if (repeatTimer) {
-      clearTimeout(repeatTimer);
-      repeatTimer = null;
-    }
-  }
-
-  function showAlternatives() {
-    if (!activeKey)
+    highlighted = false;
+    //if key has been repeated dont send it on touchend
+    if( repeating ){
+      repeating = false;
       return;
-    pageview.showAlternatives(activeKey);
-    pageview.unhighlight(activeKey);
-    alternativesShowing = true;
-    alternativesRect = pageview.alternativesMenu.getBoundingClientRect();
-    activeAltKey = pageview.alternativesMenu.firstElementChild;
-    activeAltKey.classList.add('touched');
-  }
-
-  function hideAlternatives() {
-    pageview.hideAlternatives(activeKey);
-    alternativesShowing = false;
-    activeAltKey = null;
+    }
+    dispatchKeyEvent(activeKey, longKey);
   }
 
   function repeatKey() {
     repeating = true;
-    dispatchKeyEvent(activeKey);
+    dispatchKeyEvent( activeKey );
     repeatTimer = setTimeout(repeatKey, REPEAT_INTERVAL);
   }
 
@@ -330,12 +280,14 @@ module.exports =function(){
 
     for (var i = 0; i < chars.length; i += 2) {
       var keycode = chars[i];
-      if (keycode === 0) // Keycode 0 means end of word
+      if (keycode === 0){ // Keycode 0 means end of word
         keycode = 32;    // so expect a space character instead
+      }
       var weight = chars[i + 1];
       var keyname = keyCodeToName[keycode];
-      if (!keyname)
+      if (!keyname){
         continue;
+      }
       weight = weight / highestWeight;
       weight = weight * RESIZE_FACTOR;
       weight = weight * weight;

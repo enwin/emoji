@@ -30,34 +30,38 @@ module.exports = function( app ){
       return el.rect;
     },
     move: function( next ){
+
+      var page = app.datas.currentPage;
+
       // TODO clean selector
-      var currentPage = document.querySelector( '.show li.show' ),
-          container = currentPage.parentNode.parentNode,
-          nextPage = currentPage[ next ? 'nextElementSibling' : 'previousElementSibling' ],
+      var currentScreen = page.currentScreen,
+          nextScreen = currentScreen[ next ? 'nextElementSibling' : 'previousElementSibling' ],
           index,
           out = 100*(next ? -1 : 1 );
 
-      if( !nextPage ){
+      if( !nextScreen ){
         return;
       }
 
-      if( container.pager.style ){
-        index = Array.prototype.indexOf.call( container.pages, nextPage );
-        container.pager.style.transform = ['translateX(',(100*index),'%)'].join('');
-      }
-
-      // clear key position
-      app.clearKeyRect();
-
-      nextPage.style.transform = ['translateX(', out*-1 ,'%)'].join('');
-      nextPage.style.display = 'block';
+      nextScreen.style.transform = ['translateX(', out*-1 ,'%)'].join('');
+      nextScreen.style.display = 'block';
 
       window.requestAnimationFrame( function(){
-        nextPage.parentNode.classList.add( 'move' );
+        nextScreen.parentNode.classList.add( 'move' );
 
         window.requestAnimationFrame(function(){
-          nextPage.style.transform = 'translateX(0)';
-          currentPage.style.transform = ['translateX(', out ,'%)'].join('');
+
+          if( page.pager.style ){
+            index = Array.prototype.indexOf.call( page.pages, nextScreen );
+            page.pager.style.transform = ['translateX(',(100*index),'%)'].join('');
+          }
+
+          page.currentScreen = nextScreen;
+          nextScreen.style.transform = 'translateX(0)';
+          currentScreen.style.transform = ['translateX(', out ,'%)'].join('');
+
+          // clear key position
+          app.clearKeyRect();
         });
       } );
 
